@@ -4,6 +4,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Hashtable;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Rayzr
@@ -17,7 +19,15 @@ public class MessageHandler {
 
     public void load(ConfigurationSection config) {
         messages.clear();
-        config.getKeys(true).forEach(key -> messages.put(key, config.get(key).toString()));
+        config.getKeys(true).forEach(key -> {
+            String value;
+            if (config.isList(key)) {
+                value = config.getList(key).stream().map(Objects::toString).collect(Collectors.joining("\n"));
+            } else {
+                value = config.get(key).toString();
+            }
+            messages.put(key, value);
+        });
     }
 
     private String getPrefixFor(String key) {
@@ -29,10 +39,11 @@ public class MessageHandler {
     }
 
     public String trRaw(String key, Object... objects) {
-        return ChatColor.translateAlternateColorCodes('&', String.format(messages.getOrDefault(key, key), objects));
+        return ChatColor.translateAlternateColorCodes('&', String.format(messages.getOrDefault(key, key).replace("\n", "\n" + ChatColor.RESET), objects));
     }
 
     public String tr(String key, Object... objects) {
-        return getPrefixFor(key) + trRaw(key, objects);
+        String prefix = getPrefixFor(key);
+        return prefix + trRaw(key, objects).replace("\n" + ChatColor.RESET, "\n" + ChatColor.RESET + prefix);
     }
 }

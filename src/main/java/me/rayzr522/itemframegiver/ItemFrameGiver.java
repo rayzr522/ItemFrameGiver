@@ -1,8 +1,15 @@
 package me.rayzr522.itemframegiver;
 
+import me.rayzr522.itemframegiver.command.CommandHandler;
+import me.rayzr522.itemframegiver.data.CooldownManager;
+import me.rayzr522.itemframegiver.data.FrameManager;
+import me.rayzr522.itemframegiver.data.GiverFrame;
+import me.rayzr522.itemframegiver.event.ItemFrameListener;
 import me.rayzr522.itemframegiver.utils.MessageHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -15,6 +22,8 @@ import java.util.logging.Level;
 public class ItemFrameGiver extends JavaPlugin {
     private static ItemFrameGiver instance;
     private MessageHandler messages = new MessageHandler();
+    private FrameManager frameManager = new FrameManager();
+    private CooldownManager cooldownManager = new CooldownManager();
 
     public static ItemFrameGiver getInstance() {
         return instance;
@@ -24,11 +33,18 @@ public class ItemFrameGiver extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        ConfigurationSerialization.registerClass(GiverFrame.class, "IFG-GiverFrame");
+
+        getCommand("itemframegiver").setExecutor(new CommandHandler(this));
+        getServer().getPluginManager().registerEvents(new ItemFrameListener(this), this);
+
         reload();
     }
 
     @Override
     public void onDisable() {
+        save();
+
         instance = null;
     }
 
@@ -36,10 +52,14 @@ public class ItemFrameGiver extends JavaPlugin {
      * (Re)loads all configs from the disk
      */
     public void reload() {
-        saveDefaultConfig();
-        reloadConfig();
-
+        frameManager.load(getConfig("frames.yml"));
         messages.load(getConfig("messages.yml"));
+    }
+
+    public void save() {
+        YamlConfiguration frames = getConfig("frames.yml");
+        frameManager.save(frames);
+        saveConfig(frames, "frames.yml");
     }
 
     /**
@@ -52,6 +72,7 @@ public class ItemFrameGiver extends JavaPlugin {
         if (!getFile(path).exists() && getResource(path) != null) {
             saveResource(path, true);
         }
+
         return YamlConfiguration.loadConfiguration(getFile(path));
     }
 
@@ -134,4 +155,11 @@ public class ItemFrameGiver extends JavaPlugin {
         return messages;
     }
 
+    public FrameManager getFrameManager() {
+        return frameManager;
+    }
+
+    public CooldownManager getCooldownManager() {
+        return cooldownManager;
+    }
 }

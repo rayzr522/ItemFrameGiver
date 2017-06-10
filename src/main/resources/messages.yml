@@ -2,8 +2,23 @@ prefix: "&8\u00bb&6 "
 no-permission: "&cYou need the permission '{0}' to do that!"
 
 command:
+  usage:
+  - "&8&m----------&e Item&6Frame&cGiver &8&m----------"
+  - "Aliases: &7/ifg"
+  - "&7/itemframegiver place &8- &eCreates an item frame"
+  - "&7/itemframegiver setCooldown none|<seconds> &8- &eSets the cooldown of the item frame you're looking at"
   fail:
     prefix-addon: "&c"
     only-players: "&cOnly players can use this command!"
     no-player: "&cThe player '{0}' does not exist!"
     not-number: "&c'{0}' is not a valid number!"
+  place:
+    needs-item: "&cYou must be holding the item you want to create a frame for."
+    success: "Created item frame."
+  setCooldown:
+    usage: "&cUsage: &7/itemframegiver setCooldown none|<seconds>"
+    no-target: "&cYou must be looking at an item frame."
+    success: "Set the delay to &e%.2f&6 seconds."
+
+item:
+  on-cooldown: "&cYou must wait another &e%.2f&c seconds to do that."
