@@ -2,7 +2,7 @@
 > Allows you to create item frames that give you items with a configurable cooldown
 
 ## Installation
-Just grab the latest JAR off of the [releases page](https://github.com/Rayzr522/ItemFrameGiver/relaeses).
+Just grab the latest JAR off of the [releases page](https://github.com/Rayzr522/ItemFrameGiver/releases).
 
 ## Usage
 Giver frames give you the item contained within when right clicked. You can set cooldowns for individual giver frames via `/ifg setCooldown`. Users with `ItemFrameGiver.admin` can remove giver frames by punching them.
