@@ -34,6 +34,7 @@ public class CommandHandler implements CommandExecutor {
 
         addCommand("setCooldown", this::commandSetCooldown);
         addCommand("place", this::commandPlace);
+        addCommand("clean", this::commandClean);
     }
 
 
@@ -153,6 +154,12 @@ public class CommandHandler implements CommandExecutor {
                 player.sendMessage(plugin.tr("command.place.success"));
             }
         }.runTaskLater(plugin, 1L);
+    }
+
+    private void commandClean(Player player, String[] args) {
+        int cleaned = plugin.getFrameManager().clean();
+
+        player.sendMessage(plugin.tr("command.clean.success", cleaned));
     }
 
 }

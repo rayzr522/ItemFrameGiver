@@ -1,11 +1,12 @@
 package me.rayzr522.itemframegiver.data;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.ItemFrame;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -45,12 +46,8 @@ public class FrameManager {
 
         frameMap.clear();
 
-        System.out.println("Keys: ");
-        System.out.println(config.getKeys(false).stream().collect(Collectors.joining(", ")));
-
-        config.getKeys(false).forEach(key -> {
-            System.out.println("Loading " + key);
-            GiverFrame frame = (GiverFrame) config.get(key);
+        config.getKeys(false).stream().filter(config::isConfigurationSection).forEach(key -> {
+            GiverFrame frame = GiverFrame.deserialize(config.getConfigurationSection(key));
             frameMap.put(frame.getUniqueId(), frame);
         });
     }
@@ -59,7 +56,42 @@ public class FrameManager {
         Objects.requireNonNull(config, "config cannot be null!");
 
         frameMap.forEach((id, frame) -> {
-            config.set(id.toString(), frame);
+            config.createSection(id.toString(), frame.serialize());
         });
+    }
+
+    public void debug(Logger logger) {
+        this.frameMap.values().stream().map(Objects::toString).forEach(logger::info);
+    }
+
+    public int clean() {
+        return new Object() {
+            private ItemFrame getItemFrame(UUID id) {
+                for (World world : Bukkit.getWorlds()) {
+                    Optional<ItemFrame> itemFrame = world.getEntitiesByClass(ItemFrame.class).stream()
+                            .filter(entity -> entity.getUniqueId().equals(id))
+                            .findFirst();
+
+                    if (itemFrame.isPresent()) {
+                        return itemFrame.get();
+                    }
+                }
+
+                return null;
+            }
+
+            private int clean() {
+                int counter = 0;
+
+                for (GiverFrame giverFrame : getFrameMap().values()) {
+                    if (getItemFrame(giverFrame.getUniqueId()) == null) {
+                        removeFrame(giverFrame.getUniqueId());
+                        counter++;
+                    }
+                }
+
+                return counter;
+            }
+        }.clean();
     }
 }

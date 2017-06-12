@@ -1,7 +1,7 @@
 package me.rayzr522.itemframegiver.data;
 
 import com.google.common.collect.ImmutableMap;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Map;
 import java.util.UUID;
@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Created by Rayzr522 on 6/10/17.
  */
-public class GiverFrame implements ConfigurationSerializable {
+public class GiverFrame {
     private UUID uuid;
     private double cooldown;
 
@@ -22,9 +22,11 @@ public class GiverFrame implements ConfigurationSerializable {
         this(uuid, 0.0);
     }
 
-    @SuppressWarnings("unused")
-    private GiverFrame(Map<String, Object> data) {
-        this(UUID.fromString(data.get("uuid").toString()), (double) data.get("cooldown"));
+    public static GiverFrame deserialize(ConfigurationSection config) {
+        UUID uuid = UUID.fromString(config.getString("uuid"));
+        double cooldown = config.getDouble("cooldown");
+
+        return new GiverFrame(uuid, cooldown);
     }
 
     public UUID getUniqueId() {
@@ -39,7 +41,6 @@ public class GiverFrame implements ConfigurationSerializable {
         this.cooldown = cooldown;
     }
 
-    @Override
     public Map<String, Object> serialize() {
         return ImmutableMap.<String, Object>builder()
                 .put("uuid", uuid.toString())

@@ -8,7 +8,6 @@ import me.rayzr522.itemframegiver.event.ItemFrameListener;
 import me.rayzr522.itemframegiver.utils.MessageHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,8 +32,6 @@ public class ItemFrameGiver extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        ConfigurationSerialization.registerClass(GiverFrame.class, "IFG-GiverFrame");
-
         getCommand("itemframegiver").setExecutor(new CommandHandler(this));
         getServer().getPluginManager().registerEvents(new ItemFrameListener(this), this);
 
@@ -57,7 +54,7 @@ public class ItemFrameGiver extends JavaPlugin {
     }
 
     public void save() {
-        YamlConfiguration frames = getConfig("frames.yml");
+        YamlConfiguration frames = new YamlConfiguration();
         frameManager.save(frames);
         saveConfig(frames, "frames.yml");
     }

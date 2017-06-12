@@ -3,6 +3,7 @@ package me.rayzr522.itemframegiver.event;
 import me.rayzr522.itemframegiver.ItemFrameGiver;
 import me.rayzr522.itemframegiver.data.CooldownManager.PlayerCooldowns;
 import me.rayzr522.itemframegiver.data.GiverFrame;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -35,7 +36,6 @@ public class ItemFrameListener implements Listener {
         }
 
         ItemFrame itemFrame = (ItemFrame) e.getRightClicked();
-        System.out.println("Clicked ID: " + itemFrame.getUniqueId());
 
         GiverFrame giverFrame = plugin.getFrameManager().getFrame(itemFrame.getUniqueId());
         if (giverFrame == null) {
@@ -78,7 +78,7 @@ public class ItemFrameListener implements Listener {
             return;
         }
 
-        if (cancelIfNotAdmin(e, e.getRemover())) {
+        if (!cancelIfNotAdmin(e, e.getRemover())) {
             plugin.getFrameManager().removeFrame(giverFrame.getUniqueId());
         }
     }
@@ -96,7 +96,14 @@ public class ItemFrameListener implements Listener {
             return;
         }
 
-        cancelIfNotAdmin(e, e.getDamager());
+        if (!cancelIfNotAdmin(e, e.getDamager())) {
+            HangingBreakByEntityEvent event = new HangingBreakByEntityEvent(itemFrame, e.getDamager());
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                itemFrame.remove();
+            }
+        }
     }
 
     private boolean cancelIfNotAdmin(Cancellable event, Entity entity) {
