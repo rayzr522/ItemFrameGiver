@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.rayzr522</groupId>
 	<artifactId>itemframegiver</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>ItemFrameGiver</name>
 	<description>Allows you to create item frames that give you items with a configurable cooldown</description>
 	<repositories>
@@ -14,9 +14,9 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.10.2-R0.1-SNAPSHOT</version>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.13.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

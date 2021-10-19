@@ -3,6 +3,7 @@ name: ItemFrameGiver
 version: 1.0.0
 description: Allows you to create item frames that give you items with a configurable cooldown
 author: Rayzr
+api-version: 1.13
 commands:
   itemframegiver:
     description: The main command for ItemFrameGiver
