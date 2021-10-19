@@ -1,5 +1,5 @@
 prefix: "&8\u00bb&6 "
-no-permission: "&cYou need the permission '{0}' to do that!"
+no-permission: "&cYou need the permission '%s' to do that!"
 
 command:
   usage:
